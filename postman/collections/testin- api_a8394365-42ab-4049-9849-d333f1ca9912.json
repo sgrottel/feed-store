@@ -1,0 +1,151 @@
+{
+	"info": {
+		"_postman_id": "4232f83c-d4df-4700-844c-4e14032964a7",
+		"name": "testin- api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Sample endpoint: Returns details about a particular user",
+			"id": "60553d9c-2c37-40ee-8a0c-0bca87b9924a",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/feed?id=37111423",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"feed"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "37111423",
+							"description": "(Required) ID of the user"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"id": "3d800665-beef-47c4-876b-46f27b4fb810",
+					"name": "Sample response: Details about a user by ID",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"description": "Added as a part of security scheme: basic",
+								"key": "Authorization",
+								"value": "Basic <credentials>"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/feed?id=37111423",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"feed"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "37111423"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"disabled": false,
+							"description": "A link to the next page of responses",
+							"key": "x-next",
+							"value": "do dolore deserunt in"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"responseTime": null,
+					"body": "{\n  \"id\": 84525,\n  \"name\": \"dolore ut cillum\",\n  \"tag\": \"id laboris adipisicing consectetur\"\n}"
+				},
+				{
+					"id": "1cc72e68-d046-4c56-b015-8e6e4a221493",
+					"name": "Unexpected error",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"description": "Added as a part of security scheme: basic",
+								"key": "Authorization",
+								"value": "Basic <credentials>"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/feed?id=37111423",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"feed"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "37111423"
+								}
+							]
+						}
+					},
+					"status": "Internal Server Error",
+					"code": 500,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"responseTime": null,
+					"body": "{\n  \"code\": 4819834,\n  \"message\": \"aliquip incididunt ipsum dolore\"\n}"
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "basic",
+		"basic": [
+			{
+				"key": "username",
+				"value": "<Basic Auth Username>",
+				"type": "string"
+			},
+			{
+				"key": "password",
+				"value": "<Basic Auth Password>",
+				"type": "string"
+			}
+		]
+	},
+	"variable": [
+		{
+			"id": "1d75843e-d212-4602-a1e7-ca4efb1029c4",
+			"key": "baseUrl",
+			"value": "localhost:48000",
+			"type": "string"
+		}
+	]
+}
