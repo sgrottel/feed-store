@@ -9,30 +9,14 @@ servers:
 paths:
   /feed:
     get:
-      summary: 'Sample endpoint: Returns details about a particular user'
-      operationId: listUser
-      tags:
-        - user
-      parameters:
-        - name: id
-          in: query
-          description: ID of the user
-          required: true
-          schema:
-            type: integer
-            format: int32
+      summary: 'Gets all feeds meta data'
       responses:
         '200':
-          description: 'Sample response: Details about a user by ID'
-          headers:
-            x-next:
-              description: A link to the next page of responses
-              schema:
-                type: string
+          description: 'Success'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/FeedList'
         default:
           description: Unexpected error
           content:
@@ -41,7 +25,7 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    User:
+    FeedList:
       type: object
       required:
         - id
@@ -66,6 +50,7 @@ components:
         message:
           type: string
   securitySchemes:
+     
     BasicAuth:
       type: http
       scheme: basic
