@@ -1,0 +1,175 @@
+openapi: 3.0.0
+info:
+  title: Feed Store
+
+  description: >
+    Feed Store is an online backend to store and provide RSS feeds.
+    Think of it as a cache between a feed provide and a feed reader.
+
+    It is not an aggregator to (actively) collect information from other online sources and create feeds out of it.
+    
+    This API provides end points for creating, querying and deleting feeds and entries
+
+  version: 1.0.0
+
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+
+  contact:
+    name: SGrottel (Developer)
+    url: https://go.grottel.net/feed-store
+  
+
+paths:
+
+  # feed list
+  /feed:
+    get:
+      # TODO: Incomplete
+      summary: Get list of all feeds
+      description: Lists all stored feeds
+      parameters:
+      - name: bearer
+        in: header
+        schema:
+          type: string
+      - $ref: "#/components/parameters/limit"
+      responses:
+        "200":
+          description: Ok, return feeds
+
+    post:
+      # TODO: Incomplete
+      summary: Create new feed
+      responses:
+        "200":
+          description: Ok, new feed created
+
+  # action on specific feed
+  /feed/{fid}:
+    get:
+      # TODO: Incomplete
+      summary: Get a feed object
+      responses:
+        "200":
+          description: Ok, feed found and returned
+
+    patch:
+      # TODO: Incomplete
+      summary: Change a feed meta data
+      responses:
+        "200":
+          description: Ok, feed meta data updated
+
+    delete:
+      # TODO: Incomplete
+      summary: Deletes a feed
+      responses:
+        "200":
+          description: Ok, feed has been deleted
+
+  # entry list
+  /feed/{fid}/entry:
+    get:
+      # TODO: Incomplete
+      summary: Gets the entries of the feed
+      responses:
+        "200":
+          description: Ok, entries of the feed have been returned
+
+    post:
+      # TODO: Incomplete
+      summary: posts entries into the feed
+      responses:
+        "200":
+          description: Ok, entries have been posted or updated
+
+  # action on specific entry
+  /feed/{fid}/entry/{eid}:
+    get:
+      # TODO: Incomplete
+      summary: Gets a specific entry
+      responses:
+        "200":
+          description: Ok, entry returned
+
+    patch:
+      # TODO: Incomplete
+      summary: Updates a specific entry
+      responses:
+        "200":
+          description: Ok, entry has been updated
+
+    delete:
+      # TODO: Incomplete
+      summary: Deletes a specific entry
+      responses:
+        "200":
+          description: Ok, entry has been deleted
+
+  # RSS publish end point
+  /feed/{fid}/rss:
+    get:
+      summary: Get feed and entries as RSS/XML document
+      parameters:
+      - $ref: "#/components/parameters/feedId"
+      - $ref: "#/components/parameters/limit"
+      - $ref: "#/components/parameters/wwwAuthorization"
+      responses:
+        "200":
+          description: Ok, feed's content returned
+          content:
+            text/xml:
+              schema:
+                type: string
+        "401":
+          description: Unauthorized. User has not access right
+        "404":
+          description: Feed not found
+
+
+components: # Not yet
+
+  schemas:
+
+    simpleUrlPartString:
+      type: string
+      minLength: 1
+      maxLength: 256
+      description: Url compatible string
+      pattern: ^[a-z0-9\-]+$
+
+  parameters:
+
+    feedId:
+      name: fid
+      description: Id of a specific feed
+      in: path
+      required: true
+      schema:
+        $ref: "#/components/schemas/simpleUrlPartString"
+
+    entryId:
+      name: eid
+      description: Id of a specific entry
+      in: path
+      required: true
+      schema:
+        $ref: "#/components/schemas/simpleUrlPartString"
+
+    limit:
+      name: limit
+      description: Limits the number of elements in the returned answer
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+
+    wwwAuthorization:
+      name: Authorization
+      in: header
+      description: Authorization header
+      schema:
+        type: string
+
