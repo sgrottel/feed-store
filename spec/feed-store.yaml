@@ -23,90 +23,238 @@ info:
 
 paths:
 
-  # feed list
+  # actions on feed list
   /feed:
     get:
-      # TODO: Incomplete
       summary: Get list of all feeds
-      description: Lists all stored feeds
+      description: Lists all stored feeds, sorted by their feed id (ascending).
       parameters:
       - name: bearer
         in: header
         schema:
           type: string
       - $ref: "#/components/parameters/limit"
+      - $ref: "#/components/parameters/minFeedId"
+      - $ref: "#/components/parameters/linkMatch"
       responses:
         "200":
           description: Ok, return feeds
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/feedMetaDataWithId"
 
     post:
-      # TODO: Incomplete
       summary: Create new feed
+      parameters:
+      - name: bearer
+        in: header
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/feedMetaData"
       responses:
+        "201":
+          description: Ok, new feed created.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/feedMetaDataWithId"
         "200":
-          description: Ok, new feed created
+          description: >
+            Feed updated.
+            A feed with the specified `link` already existed.
+            It's meta data was updated accordingly.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/feedMetaDataWithId"
+        "400":
+          description: Request is invalid.
 
   # action on specific feed
   /feed/{fid}:
     get:
-      # TODO: Incomplete
       summary: Get a feed object
+      parameters:
+      - name: bearer
+        in: header
+        schema:
+          type: string
+      - $ref: "#/components/parameters/feedId"
       responses:
         "200":
-          description: Ok, feed found and returned
+          description: Ok, feed object found and returned
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/feedMetaDataWithId"
+        "404":
+          description: Feed object not found
 
     patch:
-      # TODO: Incomplete
       summary: Change a feed meta data
+      parameters:
+      - name: bearer
+        in: header
+        schema:
+          type: string
+      - $ref: "#/components/parameters/feedId"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/feedMetaData"
       responses:
         "200":
-          description: Ok, feed meta data updated
+          description: Ok, feed object found, updated and new state returned
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/feedMetaDataWithId"
+        "400":
+          description: >
+            Request is invalid.
+            Or, updating the feed object would create an invalid state, e.g. two feeds with the same non-empty `link`s
+        "404":
+          description: Feed object not found
 
     delete:
-      # TODO: Incomplete
       summary: Deletes a feed
+      parameters:
+      - name: bearer
+        in: header
+        schema:
+          type: string
+      - $ref: "#/components/parameters/feedId"
       responses:
         "200":
-          description: Ok, feed has been deleted
+          description: Ok, feed and all it's entries have been deleted
+        "404":
+          description: Feed object not found
 
-  # entry list
+  # actions on entry list
   /feed/{fid}/entry:
     get:
-      # TODO: Incomplete
-      summary: Gets the entries of the feed
+      summary: Gets the entries of the feed sorted by date (newest to oldest).
+      parameters:
+      - name: bearer
+        in: header
+        schema:
+          type: string
+      - $ref: "#/components/parameters/feedId"
+      - $ref: "#/components/parameters/limit"
+      - $ref: "#/components/parameters/maxDate"
       responses:
         "200":
           description: Ok, entries of the feed have been returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/feedEntryWithId"
 
     post:
-      # TODO: Incomplete
       summary: posts entries into the feed
+      description: |
+        If an entry to be posted has a non-empty guid field:
+        - if an entry already stored in the feed has the same non-empty guid value, the content of that entry is updated.
+        - if no entry with that non-empty guid value exists, the entry is added to the feed.
+      parameters:
+      - name: bearer
+        in: header
+        schema:
+          type: string
+      - $ref: "#/components/parameters/feedId"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/feedEntry"
       responses:
         "200":
           description: Ok, entries have been posted or updated
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/feedEntryWithId"
+        "404":
+          description: Feed object not found
 
   # action on specific entry
   /feed/{fid}/entry/{eid}:
     get:
-      # TODO: Incomplete
       summary: Gets a specific entry
+      parameters:
+      - name: bearer
+        in: header
+        schema:
+          type: string
+      - $ref: "#/components/parameters/feedId"
+      - $ref: "#/components/parameters/entryId"
       responses:
         "200":
           description: Ok, entry returned
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/feedEntryWithId"
+        "404":
+          description: Entry or feed object not found
 
     patch:
-      # TODO: Incomplete
       summary: Updates a specific entry
+      parameters:
+      - name: bearer
+        in: header
+        schema:
+          type: string
+      - $ref: "#/components/parameters/feedId"
+      - $ref: "#/components/parameters/entryId"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/feedEntry"
       responses:
         "200":
-          description: Ok, entry has been updated
+          description: Ok, entry object found, updated and new values returned
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/feedEntryWithId"
+        "400":
+          description: >
+            Request is invalid.
+            Or, updating the entry object would create an invalid state, e.g. two entry objects with the same non-empty `guid`s
+        "404":
+          description: Entry or feed object not found
 
     delete:
-      # TODO: Incomplete
       summary: Deletes a specific entry
+      parameters:
+      - name: bearer
+        in: header
+        schema:
+          type: string
+      - $ref: "#/components/parameters/feedId"
+      - $ref: "#/components/parameters/entryId"
       responses:
         "200":
           description: Ok, entry has been deleted
+        "404":
+          description: Entry or feed object not found
+
 
   # RSS publish end point
   /feed/{fid}/rss:
@@ -129,16 +277,94 @@ paths:
           description: Feed not found
 
 
-components: # Not yet
+components:
 
   schemas:
 
-    simpleUrlPartString:
+    simpleIdString:
       type: string
       minLength: 1
       maxLength: 256
       description: Url compatible string
       pattern: ^[a-z0-9\-]+$
+    
+    feedMetaData:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Human-readable title of the feed
+        link:
+          type: string
+          format: uri
+          description: Unique origin link
+        description:
+          type: string
+          description: Human-readable description of the feed's content
+        maxItems:
+          type: integer
+          minimum: 0
+          description: >
+            The maximum number of items stored in the feed.
+            Zero means default (implementation dependent, might be unlimited).
+        maxAgeDays:
+          type: integer
+          minimum: 0
+          description: >
+            The maximum age in days for items to be stored in the feeds
+            Older items can be deleted.
+            Zero means default (implementation dependent, might be unlimited).
+      required:
+      - link
+
+    feedMetaDataWithId:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/feedMetaData"
+      properties:
+        id:
+          $ref: "#/components/schemas/simpleIdString"
+      required:
+      - id
+        
+    feedEntry:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Human-readable title of the entry
+        link:
+          type: string
+          format: uri
+          description: Unique origin link
+        description:
+          type: string
+          description: Human-readable description text
+        guid:
+          type: string
+          description: An external global unique identifier for this entry
+        guidIsPermaLink:
+          type: boolean
+          description: If true, the field `guid` holds a permanently valid uri
+        date:
+          type: string
+          format: date-time
+          description: The date of the last update of the entry
+          default: now
+        author:
+          type: string
+          description: Author of the entry.
+ 
+    feedEntryWithId:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/feedEntry"
+      properties:
+        id:
+          $ref: "#/components/schemas/simpleIdString"
+      required:
+      - id
+      - date
 
   parameters:
 
@@ -148,7 +374,7 @@ components: # Not yet
       in: path
       required: true
       schema:
-        $ref: "#/components/schemas/simpleUrlPartString"
+        $ref: "#/components/schemas/simpleIdString"
 
     entryId:
       name: eid
@@ -156,15 +382,44 @@ components: # Not yet
       in: path
       required: true
       schema:
-        $ref: "#/components/schemas/simpleUrlPartString"
+        $ref: "#/components/schemas/simpleIdString"
+
+    linkMatch:
+      name: link
+      description: >
+        Limits the return list to elements which links matching the specified value.
+      in: query
+      schema:
+        type: string
 
     limit:
       name: limit
-      description: Limits the number of elements in the returned answer
+      description: >
+        Limits the number of elements in the returned answer
+        Used together with `minFeedId` or `maxDate` for paginated results.
       in: query
       schema:
         type: integer
         minimum: 1
+
+    minFeedId:
+      name: min-feed-id
+      description: >
+        Only returns feeds with feed id values equal or larger to the specified value.
+        Used together with `limit` for paginated results.
+      in: query
+      schema:
+        $ref: "#/components/schemas/simpleIdString"
+
+    maxDate:
+      name: max-date
+      description: >
+        Only returns entries with date values equal or older to the specified value.
+        Used together with `limit` for paginated results.
+      in: query
+      schema:
+        type: string
+        format: date-time
 
     wwwAuthorization:
       name: Authorization
