@@ -379,7 +379,7 @@ components:
         $ref: "#/components/schemas/simpleIdString"
 
     linkMatch:
-      name: link
+      name: link-match
       description: >
         Limits the return list to elements which links matching the specified value.
       in: query

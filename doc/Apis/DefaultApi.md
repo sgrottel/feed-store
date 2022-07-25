@@ -174,7 +174,7 @@ Gets a specific entry
 
 <a name="getFeeds"></a>
 # **getFeeds**
-> List getFeeds(limit, min-feed-id, link)
+> List getFeeds(limit, min-feed-id, link-match)
 
 Get list of all feeds
 
@@ -186,7 +186,7 @@ Get list of all feeds
 |------------- | ------------- | ------------- | -------------|
 | **limit** | **Integer**| Limits the number of elements in the returned answer Used together with &#x60;minFeedId&#x60; or &#x60;maxDate&#x60; for paginated results.  | [optional] [default to null] |
 | **min-feed-id** | **String**| Only returns feeds with feed id values equal or larger to the specified value. Used together with &#x60;limit&#x60; for paginated results.  | [optional] [default to null] |
-| **link** | **String**| Limits the return list to elements which links matching the specified value.  | [optional] [default to null] |
+| **link-match** | **String**| Limits the return list to elements which links matching the specified value.  | [optional] [default to null] |
 
 ### Return type
 
